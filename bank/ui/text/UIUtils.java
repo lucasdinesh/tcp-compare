@@ -61,14 +61,17 @@ public class UIUtils {
 		return propertyToString(field, sdf.format(value));
 	}
 
+	@SuppressWarnings("removal")
 	public String propertyToString(String field, double value) {
 		return propertyToString(field, new Double(value).toString());
 	}
 
+	@SuppressWarnings("removal")
 	public String propertyToString(String field, int value) {
 		return propertyToString(field, new Integer(value).toString());
 	}
 
+	@SuppressWarnings("removal")
 	public String propertyToString(String field, long value) {
 		return propertyToString(field, new Long(value).toString());
 	}
@@ -105,6 +108,7 @@ public class UIUtils {
 		return value;
 	}
 
+	@SuppressWarnings("removal")
 	public Double readDouble(String field) {
 		Double value = null;
 		while (value == null) {
@@ -122,6 +126,7 @@ public class UIUtils {
 		return value;
 	}
 
+	@SuppressWarnings("removal")
 	public Integer readInteger(String field) {
 		Integer value = null;
 		while (value == null) {
@@ -154,6 +159,7 @@ public class UIUtils {
 		return value;
 	}
 
+	@SuppressWarnings("removal")
 	public Long readLong(String field) {
 		Long value = null;
 		while (value == null) {

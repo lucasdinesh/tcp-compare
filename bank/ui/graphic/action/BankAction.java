@@ -55,6 +55,7 @@ public abstract class BankAction extends AbstractAction implements UIAction {
 		} catch (BusinessException be) {
 			GUIUtils.INSTANCE.showMessage(bankInterface.getFrame(),
 					be.getMessage(), be.getArgs(), JOptionPane.WARNING_MESSAGE);
+			
 			log.warn(be);
 		} catch (Exception exc) {
 			GUIUtils.INSTANCE.handleUnexceptedError(bankInterface.getFrame(),

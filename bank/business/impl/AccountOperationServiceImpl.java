@@ -3,7 +3,9 @@
  */
 package bank.business.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -36,12 +38,12 @@ public class AccountOperationServiceImpl implements AccountOperationService {
 
 	@Override
 	public Deposit deposit(long operationLocation, long branch,
-			long accountNumber, long envelope, double amount)
+			long accountNumber, long envelope, double amount, double pendentAmount, int status)
 			throws BusinessException {
 		CurrentAccount currentAccount = readCurrentAccount(branch,
 				accountNumber);
 		Deposit deposit = currentAccount.deposit(
-				getOperationLocation(operationLocation), envelope, amount);
+				getOperationLocation(operationLocation), envelope, amount, pendentAmount, status);
 		return deposit;
 	}
 
@@ -88,6 +90,22 @@ public class AccountOperationServiceImpl implements AccountOperationService {
 			long accountNumber, Date begin, Date end) throws BusinessException {
 		return getStatementByDate(readCurrentAccount(branch, accountNumber),
 				begin, end);
+	}
+	
+	public List<Deposit> getPendentDeposits() throws BusinessException {
+		Collection<CurrentAccount> contas = database.getAllCurrentAccounts();
+		List<Deposit> pendents = new ArrayList<Deposit>();
+		
+		contas.forEach(c -> {
+			List<Deposit> var = c.getDeposits();
+			for(Deposit D : var){
+				if(D.getStatus() == 2) 
+				{
+					pendents.add(D);
+				}
+			}
+		});
+		return pendents;		
 	}
 
 	@Override

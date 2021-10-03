@@ -12,6 +12,8 @@ import bank.business.BusinessException;
 public class CurrentAccount implements Credentials {
 
 	private double balance;
+	
+
 	private Client client;
 	private List<Deposit> deposits;
 	private CurrentAccountId id;
@@ -28,28 +30,28 @@ public class CurrentAccount implements Credentials {
 		this.withdrawals = new ArrayList<>();
 	}
 
-	public CurrentAccount(Branch branch, long number, Client client,
-			double initialBalance) {
+	public CurrentAccount(Branch branch, long number, Client client, double initialBalance) {
 		this(branch, number, client);
 		this.balance = initialBalance;
 	}
 
-	public Deposit deposit(OperationLocation location, long envelope,
-			double amount) throws BusinessException {
-		depositAmount(amount);
+	public Deposit deposit(OperationLocation location, long envelope, double amount, double pendentAmount, int status) throws BusinessException {
+		depositAmount(amount, pendentAmount);
 
-		Deposit deposit = new Deposit(location, this, envelope, amount);
+		Deposit deposit = new Deposit(location, this, envelope, amount, pendentAmount, status);
+
 		this.deposits.add(deposit);
 
 		return deposit;
 	}
 
-	private void depositAmount(double amount) throws BusinessException {
-		if (!isValidAmount(amount)) {
+	private void depositAmount(double amount, double pendentAmount) throws BusinessException {
+		if (!isValidAmount(amount, pendentAmount)) {
 			throw new BusinessException("exception.invalid.amount");
 		}
-
-		this.balance += amount;
+		if (amount < 100) {
+			this.balance += amount;
+		}
 	}
 
 	/**
@@ -81,8 +83,7 @@ public class CurrentAccount implements Credentials {
 	}
 
 	public List<Transaction> getTransactions() {
-		List<Transaction> transactions = new ArrayList<>(deposits.size()
-				+ withdrawals.size() + transfers.size());
+		List<Transaction> transactions = new ArrayList<>(deposits.size() + withdrawals.size() + transfers.size());
 		transactions.addAll(deposits);
 		transactions.addAll(withdrawals);
 		transactions.addAll(transfers);
@@ -107,26 +108,27 @@ public class CurrentAccount implements Credentials {
 		return amount <= balance;
 	}
 
-	private boolean isValidAmount(double amount) {
-		return amount > 0;
+	private boolean isValidAmount(double amount, double pendentAmount) {
+		if(amount > 0 || pendentAmount > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	public Transfer transfer(OperationLocation location,
-			CurrentAccount destinationAccount, double amount)
+	public Transfer transfer(OperationLocation location, CurrentAccount destinationAccount, double amount)
 			throws BusinessException {
 		withdrawalAmount(amount);
-		destinationAccount.depositAmount(amount);
+		destinationAccount.depositAmount(amount, 0);
 
-		Transfer transfer = new Transfer(location, this, destinationAccount,
-				amount);
+		Transfer transfer = new Transfer(location, this, destinationAccount, amount);
 		this.transfers.add(transfer);
 		destinationAccount.transfers.add(transfer);
 
 		return transfer;
 	}
 
-	public Withdrawal withdrawal(OperationLocation location, double amount)
-			throws BusinessException {
+	public Withdrawal withdrawal(OperationLocation location, double amount) throws BusinessException {
 		withdrawalAmount(amount);
 
 		Withdrawal withdrawal = new Withdrawal(location, this, amount);
@@ -136,7 +138,7 @@ public class CurrentAccount implements Credentials {
 	}
 
 	private void withdrawalAmount(double amount) throws BusinessException {
-		if (!isValidAmount(amount)) {
+		if (!isValidAmount(amount, 0)) {
 			throw new BusinessException("exception.invalid.amount");
 		}
 
@@ -145,6 +147,10 @@ public class CurrentAccount implements Credentials {
 		}
 
 		this.balance -= amount;
+	}
+	
+	public void setBalance(double amount) {
+		this.balance += amount;
 	}
 
 }

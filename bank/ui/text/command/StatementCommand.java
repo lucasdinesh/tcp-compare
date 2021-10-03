@@ -81,6 +81,7 @@ public class StatementCommand extends Command {
 		sb.append(getTextManager().getText("operation.type")).append("\t");
 		sb.append(getTextManager().getText("details")).append("\t");
 		sb.append(getTextManager().getText("amount")).append("\n");
+		sb.append(getTextManager().getText("status")).append("\n");
 		sb.append("---------------------------------------------------------------------------------\n");
 		for (Transaction transaction : transactions) {
 			sb.append(UIUtils.INSTANCE.formatDateTime(transaction.getDate()))
@@ -116,6 +117,13 @@ public class StatementCommand extends Command {
 			} else if (transaction instanceof Withdrawal) {
 				sb.append("\t\t\t");
 				sb.append("- ").append(transaction.getAmount());
+			}
+			if (transaction instanceof Deposit) {
+				sb.append(((Deposit) transaction).getStatus()).append("\t\t");
+			}
+			else {
+				sb.append('1').append("\t\t");
+
 			}
 			sb.append("\n");
 		}

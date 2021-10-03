@@ -25,10 +25,12 @@ public class DepositCommand extends Command {
 		Long accountNumber = bankInterface.readCurrentAccountNumber();
 		Long envelope = UIUtils.INSTANCE.readLong("envelope");
 		Double amount = UIUtils.INSTANCE.readDouble("amount");
+		Double pendentAmount = UIUtils.INSTANCE.readDouble("pendentAmount");
+		Integer status = UIUtils.INSTANCE.readInteger("status");
 
 		Deposit deposit = accountOperationService.deposit(bankInterface
 				.getOperationLocation().getNumber(), branch, accountNumber,
-				envelope, amount);
+				envelope, amount, pendentAmount, status);
 
 		System.out.println(getTextManager().getText(
 				"message.operation.succesfull"));

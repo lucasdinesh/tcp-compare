@@ -1,5 +1,5 @@
 /*
- * Created on 6 Jan 2014 21:13:57 
+  * Created on 6 Jan 2014 21:13:57 
  */
 package bank.ui.graphic.action;
 
@@ -31,7 +31,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.table.AbstractTableModel;
-
 import bank.business.AccountOperationService;
 import bank.business.BusinessException;
 import bank.business.domain.Branch;
@@ -88,7 +87,7 @@ public class StatementAction extends AccountAbstractAction {
 
 		@Override
 		public int getColumnCount() {
-			return 5;
+			return 6;
 		}
 
 		@Override
@@ -109,6 +108,9 @@ public class StatementAction extends AccountAbstractAction {
 				break;
 			case 4:
 				key = "amount";
+				break;
+			case 5:
+				key = "status";
 				break;
 			default:
 				assert false;
@@ -157,7 +159,11 @@ public class StatementAction extends AccountAbstractAction {
 				break;
 			case 4:
 				if (t instanceof Deposit) {
-					val = "+ " + t.getAmount();
+					if(t.getAmount() != 0) {
+						val = "+ " + t.getAmount();						
+					}else {
+						val = "+ " + t.getPendentAmount();	
+					}
 				} else if (t instanceof Transfer) {
 					Transfer transfer = (Transfer) t;
 					if (transfer.getAccount().getId().equals(id)) {
@@ -171,7 +177,15 @@ public class StatementAction extends AccountAbstractAction {
 					assert false;
 				}
 				break;
-
+			case 5:
+				if (t instanceof Deposit)
+				{
+					val = textManager.getText(String.valueOf(((Deposit) t).getStatus()));
+				}
+				else {
+				 val = textManager.getText(String.valueOf(1));
+				}
+				break;
 			default:
 				assert false;
 				break;

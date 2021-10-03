@@ -7,12 +7,15 @@ package bank.business.domain;
 public class Deposit extends Transaction {
 
 	private long envelope;
-
-	public Deposit(OperationLocation location, CurrentAccount account,
-			long envelope, double amount) {
+	private int status;
+	
+	public Deposit(OperationLocation location, CurrentAccount account, long envelope, double amount,
+			double pendentAmount, int status) {
 		super(location, account, amount);
 		this.envelope = envelope;
+		this.status = status;
 	}
+	
 
 	/**
 	 * @return the envelope
@@ -20,5 +23,12 @@ public class Deposit extends Transaction {
 	public long getEnvelope() {
 		return envelope;
 	}
+	
+	public int getStatus() {
+		return status;
+	}
 
+	public void setStatus(int status) {
+		this.status = status;
+	}
 }
